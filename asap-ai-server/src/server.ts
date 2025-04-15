@@ -6,7 +6,6 @@ import config from './app/config';
 import ApiError from './app/error/ApiError';
 import httpStatus from 'http-status';
 
-
 let server: Server;
 
 async function main() {
@@ -48,5 +47,29 @@ process.on('uncaughtException', () => {
     });
   } else {
     process.exit(1);
+  }
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received');
+  if (server) {
+    server.close(() => {
+      console.log('Server closed due to SIGTERM');
+      process.exit(0);
+    });
+  } else {
+    process.exit(0);
+  }
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received');
+  if (server) {
+    server.close(() => {
+      console.log('Server closed due to SIGINT');
+      process.exit(0);
+    });
+  } else {
+    process.exit(0);
   }
 });
